@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<extension key="de.systopia.rebook" type="module">
+  <file>rebook</file>
+  <name>Rebook Feature</name>
+  <description>Allows you to rebook contributions to other contacts</description>
+  <license>AGPL-3.0</license>
+  <maintainer>
+    <author>SYSTOPIA</author>
+    <email>endres@systopia.de</email>
+  </maintainer>
+  <urls>
+    <url desc="Main Extension Page">https://github.com/systopia/de.systopia.rebook</url>
+    <url desc="Documentation">https://github.com/systopia/de.systopia.rebook</url>
+    <url desc="Support">https://github.com/systopia/de.systopia.rebook/issues</url>
+    <url desc="Licensing">http://www.gnu.org/licenses/agpl-3.0.html</url>
+  </urls>
+  <releaseDate>2017-03-22</releaseDate>
+  <version>0.8.dev</version>
+  <develStage>dev</develStage>
+  <compatibility>
+    <ver>4.6</ver>
+  </compatibility>
+  <comments>Feature extracted from de.systopia.donrec extension</comments>
+  <civix>
+    <namespace>CRM/Rebook</namespace>
+  </civix>
+</extension>

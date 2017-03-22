@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<menu>
+  <item>
+    <path>civicrm/rebook/rebook</path>
+    <page_callback>CRM_Rebook_Form_Task_Rebook</page_callback>
+    <title>Rebook</title>
+    <access_arguments>edit contributions</access_arguments>
+  </item>
+</menu>
