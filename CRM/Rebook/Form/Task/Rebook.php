@@ -125,6 +125,9 @@ class CRM_Rebook_Form_Task_Rebook extends CRM_Core_Form {
     $contribution_fieldKeys = CRM_Contribute_DAO_Contribution::fieldKeys();
     $sepa_ooff_payment_id = CRM_Core_OptionGroup::getValue('payment_instrument', 'OOFF', 'name');
 
+    // save recurring contribution status
+    $recur_status = self::getRecurringContributionStatus($contribution_ids);
+
     $contribution_count = count($contribution_ids);
     $session = CRM_Core_Session::singleton();
     $rebooked = 0;
@@ -218,6 +221,9 @@ class CRM_Rebook_Form_Task_Rebook extends CRM_Core_Form {
         $rebooked += 1;
       }
     }
+
+    // make sure the status of the recurring contributions haven't changed
+    self::restoreRecurringContributionStatus($recur_status);
 
     if ($rebooked == $contribution_count) {
       CRM_Core_Session::setStatus(ts('%1 contribution(s) successfully rebooked!', array(1 => $contribution_count, 'domain' => 'de.systopia.rebook')), ts('Successfully rebooked!'), 'success');
@@ -363,4 +369,54 @@ class CRM_Rebook_Form_Task_Rebook extends CRM_Core_Form {
     }
   }
 
+
+  /**
+   * Collect the status of all recurring contribution objects connected to those contributions
+   *
+   * @param $contribution_ids array contribution IDs
+   * @return array map contribution_rcur ID => contribution_status_id
+   */
+  public static function getRecurringContributionStatus($contribution_ids) {
+    if (empty($contribution_ids)) {
+      return [];
+    }
+
+    $status = [];
+    $contribution_id_list = implode(',', $contribution_ids);
+    $data = CRM_Core_DAO::executeQuery("
+      SELECT rcur.id                     AS rcur_id, 
+             rcur.contribution_status_id AS status_id 
+      FROM civicrm_contribution_recur rcur
+      LEFT JOIN civicrm_contribution contribution ON rcur.id = contribution.contribution_recur_id
+      WHERE contribution.id IN ({$contribution_id_list})");
+    while ($data->fetch()) {
+      $status[$data->rcur_id] = $data->status_id;
+    }
+    return $status;
+  }
+
+  /**
+   * Make sure that the submitted recurring contributions have the recorded status
+   *
+   * @param $desired_status array map contribution_rcur ID => contribution_status_id
+   */
+  public static function restoreRecurringContributionStatus($desired_status) {
+    if (!empty($desired_status)) {
+      $recurring_contribution_id_list = implode(',', array_keys($desired_status));
+      $current_status = CRM_Core_DAO::executeQuery("
+      SELECT rcur.id                     AS rcur_id, 
+             rcur.contribution_status_id AS status_id 
+      FROM civicrm_contribution_recur rcur
+      WHERE rcur.id IN ({$recurring_contribution_id_list})");
+      while ($current_status->fetch()) {
+        $recurring_contribution_id = $current_status->rcur_id;
+        if ($desired_status[$recurring_contribution_id] != $current_status->status_id) {
+          // this does NOT have the right status, let's fix that:
+          civicrm_api('ContributionRecur', 'create', [
+              'id'                     => $recurring_contribution_id,
+              'contribution_status_id' => $desired_status[$recurring_contribution_id]]);
+        }
+      }
+    }
+  }
 }
