@@ -412,9 +412,13 @@ class CRM_Rebook_Form_Task_Rebook extends CRM_Core_Form {
         $recurring_contribution_id = $current_status->rcur_id;
         if ($desired_status[$recurring_contribution_id] != $current_status->status_id) {
           // this does NOT have the right status, let's fix that:
-          civicrm_api('ContributionRecur', 'create', [
-              'id'                     => $recurring_contribution_id,
-              'contribution_status_id' => $desired_status[$recurring_contribution_id]]);
+          CRM_Core_DAO::executeQuery("UPDATE civicrm_contribution_recur SET contribution_status_id = %1 WHERE id = %2;", [
+              1 => [$desired_status[$recurring_contribution_id], 'Integer'],
+              2 => [$recurring_contribution_id, 'Integer']]);
+          // API doesn't work, silently fails:
+          //civicrm_api('ContributionRecur', 'create', [
+          //    'id'                     => $recurring_contribution_id,
+          //    'contribution_status_id' => $desired_status[$recurring_contribution_id]]);
         }
       }
     }
