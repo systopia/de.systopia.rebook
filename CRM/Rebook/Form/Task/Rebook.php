@@ -252,21 +252,21 @@ class CRM_Rebook_Form_Task_Rebook extends CRM_Core_Form {
       return empty($errors) ? TRUE : $errors;
     }
 
-    // Der Kontakt, auf den umgebucht wird, darf kein Haushalt sein.
+    // mustn't rebook to households
     $contactType = $contact->getContactType($contactId);
     if (!empty($contactType) && $contactType == 'Household') {
       $errors['contactId'] = E::ts('The target contact can not be a household!');
       return empty($errors) ? TRUE : $errors;
     }
 
-    // Der Kontakt, auf den umgebucht wird, darf nicht im Papierkorb sein.
+    // mustn't rebook to deleted contacts
     $contactIsDeleted = $contact->is_deleted;
     if ($contactIsDeleted == 1) {
       $errors['contactId'] = E::ts('The target contact can not be in trash!');
       return empty($errors) ? TRUE : $errors;
     }
 
-    // Check contributions
+    // only completed contributions can be rebooked
     $completed = CRM_Core_OptionGroup::getValue('contribution_status', 'Completed', 'name');
     $arr = explode(",", $contributionIds);
     foreach ($arr as $contributionId) {

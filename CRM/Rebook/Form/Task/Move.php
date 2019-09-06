@@ -51,7 +51,7 @@ class CRM_Rebook_Form_Task_Move extends CRM_Core_Form {
 
 
   function addRules() {
-    $this->addFormRule(array('CRM_Rebook_Form_Task_Rebook', 'rebookRules'));
+    $this->addFormRule(array('CRM_Rebook_Form_Task_Move', 'moveRules'));
   }
 
 
@@ -127,5 +127,57 @@ class CRM_Rebook_Form_Task_Move extends CRM_Core_Form {
     if ($redirect_url) {
       CRM_Utils_System::redirect($redirect_url);
     }
+  }
+
+  /**
+   * Rule set for the rebooking forms
+   */
+  public static function moveRules($values) {
+    $errors = array();
+    $contactId = trim($values['contactId']);
+    $contributionIds = $values['contributionIds'];
+
+    if (!preg_match('/^\d+$/', $contactId)) { // check if is int
+      $errors['contactId'] = E::ts('Please enter a CiviCRM ID!');
+      return empty($errors) ? TRUE : $errors;
+    }
+
+    // validation for contact
+    $contact = new CRM_Contact_BAO_Contact();
+    $contact->id = (int) $contactId;
+
+    if (!$contact->find(true)) {
+      $errors['contactId'] = E::ts('A contact with CiviCRM ID %1 doesn\'t exist!', array(1 => $contactId, 'domain' => 'de.systopia.rebook'));
+      return empty($errors) ? TRUE : $errors;
+    }
+
+    // cannot move to households
+    $contactType = $contact->getContactType($contactId);
+    if (!empty($contactType) && $contactType == 'Household') {
+      $errors['contactId'] = E::ts('The target contact can not be a household!');
+      return empty($errors) ? TRUE : $errors;
+    }
+
+    // cannot be deleted
+    $contactIsDeleted = $contact->is_deleted;
+    if ($contactIsDeleted == 1) {
+      $errors['contactId'] = E::ts('The target contact can not be in trash!');
+      return empty($errors) ? TRUE : $errors;
+    }
+
+    // mustn't move recurring contributions
+    $arr = explode(",", $contributionIds);
+    foreach ($arr as $contributionId) {
+      $contribution = new CRM_Contribute_DAO_Contribution();
+      $contribution->id = $contributionId;
+      if ($contribution->find(true)) {
+        if (!empty($contribution->contribution_recur_id)) {
+          $errors['contactId'] = E::ts("You mustn't move recurring contributions.", [1 => $contributionId]);
+          return empty($errors) ? TRUE : $errors;
+        }
+      }
+    }
+
+    return empty($errors) ? TRUE : $errors;
   }
 }
