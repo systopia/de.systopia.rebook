@@ -1,7 +1,7 @@
 <?php
 /*-------------------------------------------------------+
 | SYSTOPIA Rebook Extension                              |
-| Copyright (C) 2017 SYSTOPIA                            |
+| Copyright (C) 2017-2019 SYSTOPIA                       |
 | Author: B. Endres (endres -at- systopia.de)            |
 | http://www.systopia.de/                                |
 +--------------------------------------------------------+
@@ -9,6 +9,8 @@
 +--------------------------------------------------------*/
 
 require_once 'CRM/Core/Form.php';
+
+use CRM_Rebook_ExtensionUtil as E;
 
 /**
  * Form controller class
@@ -20,16 +22,15 @@ class CRM_Rebook_Form_Task_Rebook extends CRM_Core_Form {
 
   function preProcess() {
     parent::preProcess();
-    CRM_Utils_System::setTitle(ts('Rebook', array('domain' => 'de.systopia.rebook')));
+    CRM_Utils_System::setTitle(E::ts('Rebook'));
 
     $admin = CRM_Core_Permission::check('edit contributions');
     if (!$admin) {
-      CRM_Core_Error::fatal(ts('You do not have the permissions required to access this page.', array('domain' => 'de.systopia.rebook')));
-      CRM_Utils_System::redirect();
+      throw new Exception(E::ts('You do not have the permissions required to access this page.'));
     }
 
     if (empty($_REQUEST['contributionIds'])) {
-      die(ts("You need to specifiy a contribution to rebook.", array('domain' => 'de.systopia.rebook')));
+      throw new Exception(E::ts("You need to specifiy a contribution to rebook."));
     }
 
     $this->contribution_ids = array((int) $_REQUEST['contributionIds']);
@@ -42,9 +43,9 @@ class CRM_Rebook_Form_Task_Rebook extends CRM_Core_Form {
   function buildQuickForm() {
     $contributionIds = implode(',', $this->contribution_ids);
 
-    $this->add('text', 'contactId', ts('CiviCRM ID', array('domain' => 'de.systopia.rebook')), null, $required = true);
+    $this->add('text', 'contactId', E::ts('CiviCRM ID'), null, $required = true);
     $this->add('hidden', 'contributionIds', $contributionIds);
-    $this->addDefaultButtons(ts('Rebook', array('domain' => 'de.systopia.rebook')));
+    $this->addDefaultButtons(E::ts('Rebook'));
 
     parent::buildQuickForm();
   }
@@ -57,17 +58,10 @@ class CRM_Rebook_Form_Task_Rebook extends CRM_Core_Form {
 
   function postProcess() {
     $values = $this->exportValues();
-    CRM_Rebook_Form_Task_Rebook::rebook($this->contribution_ids, trim($values['contactId']));
+    $contact_id = (int) trim($values['contactId']);
+    self::rebook($this->contribution_ids, $contact_id);
+    CRM_Core_Session::setStatus(E::ts("Re-booked %1 contribution(s) to contact [%2]", [1 => count($this->contribution_ids), 2 => $contact_id]), E::ts("Success"), 'info');
     parent::postProcess();
-
-    // finally, redirect to original contact's contribution overview
-    $origin_contact_id = CRM_Rebook_Form_Task_Rebook::checkSameContact($this->contribution_ids, NULL);
-    if (!empty($origin_contact_id)) {
-      $url = CRM_Utils_System::url('civicrm/contact/view', "reset=1&cid=$origin_contact_id&selectedChild=contribute");
-    } else {
-      $url = CRM_Utils_System::url('civicrm', "");
-    }
-    CRM_Utils_System::redirect($url);
   }
 
 
@@ -94,7 +88,7 @@ class CRM_Rebook_Form_Task_Rebook extends CRM_Core_Form {
       if (empty($contribution['is_error'])) { // contribution exists
         array_push($contact_ids, $contribution['contact_id']);
       } else {
-        CRM_Core_Session::setStatus(ts("At least one of the given contributions doesn't exist!", array('domain' => 'de.systopia.rebook')), ts("Error", array('domain' => 'de.systopia.rebook')), "error");
+        CRM_Core_Session::setStatus(E::ts("At least one of the given contributions doesn't exist!"), E::ts("Error"), "error");
         CRM_Utils_System::redirect($redirect_url);
         return;
       }
@@ -102,7 +96,7 @@ class CRM_Rebook_Form_Task_Rebook extends CRM_Core_Form {
 
     $contact_ids = array_unique($contact_ids);
     if (count($contact_ids) > 1) {
-      CRM_Core_Session::setStatus(ts('Rebooking of multiple contributions from different contacts is not allowed!', array('domain' => 'de.systopia.rebook')), ts("Rebooking not allowed!", array('domain' => 'de.systopia.rebook')), "error");
+      CRM_Core_Session::setStatus(E::ts('Moving/rebooking multiple contributions from different contacts is not allowed!'), "error");
       CRM_Utils_System::redirect($redirect_url);
       return NULL;
     } else {
@@ -114,10 +108,11 @@ class CRM_Rebook_Form_Task_Rebook extends CRM_Core_Form {
   /**
    * Will rebook all given contributions to the given target contact
    *
-   * @param $contribution_ids  an array of contribution IDs
-   * @param $contact_id        the target contact ID
+   * @param $contribution_ids  array   an array of contribution IDs
+   * @param $contact_id        integer the target contact ID
+   * @param $redirect_url      string  url to redirect to after the process
    */
-  static function rebook($contribution_ids, $contact_id, $redirect_url = NULL) {
+  public static function rebook($contribution_ids, $contact_id, $redirect_url = NULL) {
     $contact_id = (int) $contact_id;
     $excludeList = array('id', 'contribution_id', 'trxn_id', 'invoice_id', 'cancel_date', 'cancel_reason', 'address_id', 'contribution_contact_id', 'contribution_status_id');
     $cancelledStatus = CRM_Core_OptionGroup::getValue('contribution_status', 'Cancelled', 'name');
@@ -145,14 +140,14 @@ class CRM_Rebook_Form_Task_Rebook extends CRM_Core_Form {
         $params = array(
             'version'                 => 3,
             'contribution_status_id'  => $cancelledStatus,
-            'cancel_reason'           => ts('Rebooked to CiviCRM ID %1', array(1 => $contact_id, 'domain' => 'de.systopia.rebook')),
+            'cancel_reason'           => E::ts('Rebooked to CiviCRM ID %1', array(1 => $contact_id, 'domain' => 'de.systopia.rebook')),
             'cancel_date'             => date('YmdHis'),
             'currency'                => $contribution['currency'],    // see ticket #1455
             'id'                      => $contribution['id'],
         );
         $cancelledContribution = civicrm_api('Contribution', 'create', $params);
         if (!empty($cancelledContribution['is_error']) && !empty($cancelledContribution['error_message'])) {
-          CRM_Core_Session::setStatus($cancelledContribution['error_message'], ts("Error", array('domain' => 'de.systopia.rebook')), "error");
+          CRM_Core_Session::setStatus($cancelledContribution['error_message'], E::ts("Error"), "error");
         }
 
         // Now compile $attributes, taking the exclusionList into account
@@ -186,7 +181,7 @@ class CRM_Rebook_Form_Task_Rebook extends CRM_Core_Form {
         // create new contribution
         $newContribution = civicrm_api('Contribution', 'create', $attributes);
         if (!empty($newContribution['is_error']) && !empty($newContribution['error_message'])) {
-          CRM_Core_Session::setStatus($newContribution['error_message'], ts("Error", array('domain' => 'de.systopia.rebook')), "error");
+          CRM_Core_Session::setStatus($newContribution['error_message'], E::ts("Error"), "error");
         }
 
         // Exception handling for SEPA OOFF payments (org.project60.sepa extension)
@@ -198,7 +193,7 @@ class CRM_Rebook_Form_Task_Rebook extends CRM_Core_Form {
         $params = array(
             'version' => 3,
             'sequential' => 1,
-            'note' => ts('Rebooked from CiviCRM ID %1', array(1 => $contribution['contact_id'], 'domain' => 'de.systopia.rebook')),
+            'note' => E::ts('Rebooked from CiviCRM ID %1', array(1 => $contribution['contact_id'], 'domain' => 'de.systopia.rebook')),
             'entity_table' => 'civicrm_contribution',
             'entity_id' => $newContribution['id']
         );
@@ -226,10 +221,10 @@ class CRM_Rebook_Form_Task_Rebook extends CRM_Core_Form {
     self::restoreRecurringContributionStatus($recur_status);
 
     if ($rebooked == $contribution_count) {
-      CRM_Core_Session::setStatus(ts('%1 contribution(s) successfully rebooked!', array(1 => $contribution_count, 'domain' => 'de.systopia.rebook')), ts('Successfully rebooked!'), 'success');
+      CRM_Core_Session::setStatus(E::ts('%1 contribution(s) successfully rebooked!', array(1 => $contribution_count, 'domain' => 'de.systopia.rebook')), E::ts('Successfully rebooked!'), 'success');
     } else {
-      CRM_Core_Error::debug_log_message("de.systopia.rebook: Only $rebooked of $contribution_count contributions rebooked.", array('domain' => 'de.systopia.rebook'));
-      CRM_Core_Session::setStatus(ts('Please check your data and try again', array(1 => $contribution_count)), ts('Nothing rebooked!'), 'warning');
+      CRM_Core_Error::debug_log_message("de.systopia.rebook: Only $rebooked of $contribution_count contributions rebooked.");
+      CRM_Core_Session::setStatus(E::ts('Please check your data and try again', array(1 => $contribution_count)), E::ts('Nothing rebooked!'), 'warning');
       CRM_Utils_System::redirect($redirect_url);
     }
   }
@@ -244,7 +239,7 @@ class CRM_Rebook_Form_Task_Rebook extends CRM_Core_Form {
     $contributionIds = $values['contributionIds'];
 
     if (!preg_match('/^\d+$/', $contactId)) { // check if is int
-      $errors['contactId'] = ts('Please enter a CiviCRM ID!', array('domain' => 'de.systopia.rebook'));
+      $errors['contactId'] = E::ts('Please enter a CiviCRM ID!');
       return empty($errors) ? TRUE : $errors;
     }
 
@@ -253,25 +248,25 @@ class CRM_Rebook_Form_Task_Rebook extends CRM_Core_Form {
     $contact->id = (int) $contactId;
 
     if (!$contact->find(true)) {
-      $errors['contactId'] = ts('A contact with CiviCRM ID %1 doesn\'t exist!', array(1 => $contactId, 'domain' => 'de.systopia.rebook'));
+      $errors['contactId'] = E::ts('A contact with CiviCRM ID %1 doesn\'t exist!', array(1 => $contactId, 'domain' => 'de.systopia.rebook'));
       return empty($errors) ? TRUE : $errors;
     }
 
-    // Der Kontakt, auf den umgebucht wird, darf kein Haushalt sein.
+    // mustn't rebook to households
     $contactType = $contact->getContactType($contactId);
     if (!empty($contactType) && $contactType == 'Household') {
-      $errors['contactId'] = ts('The target contact can not be a household!', array('domain' => 'de.systopia.rebook'));
+      $errors['contactId'] = E::ts('The target contact can not be a household!');
       return empty($errors) ? TRUE : $errors;
     }
 
-    // Der Kontakt, auf den umgebucht wird, darf nicht im Papierkorb sein.
+    // mustn't rebook to deleted contacts
     $contactIsDeleted = $contact->is_deleted;
     if ($contactIsDeleted == 1) {
-      $errors['contactId'] = ts('The target contact can not be in trash!', array('domain' => 'de.systopia.rebook'));
+      $errors['contactId'] = E::ts('The target contact can not be in trash!');
       return empty($errors) ? TRUE : $errors;
     }
 
-    // Check contributions
+    // only completed contributions can be rebooked
     $completed = CRM_Core_OptionGroup::getValue('contribution_status', 'Completed', 'name');
     $arr = explode(",", $contributionIds);
     foreach ($arr as $contributionId) {
@@ -280,7 +275,7 @@ class CRM_Rebook_Form_Task_Rebook extends CRM_Core_Form {
       if ($contribution->find(true)) {
         // only 'completed' contributions can be rebooked
         if ($contribution->contribution_status_id != $completed) {
-          $errors['contactId'] = ts('The contribution with ID %1 is not completed!', array(1 => $contributionId, 'domain' => 'de.systopia.rebook'));
+          $errors['contactId'] = E::ts('The contribution with ID %1 is not completed!', array(1 => $contributionId, 'domain' => 'de.systopia.rebook'));
           return empty($errors) ? TRUE : $errors;
         }
       }
@@ -300,7 +295,7 @@ class CRM_Rebook_Form_Task_Rebook extends CRM_Core_Form {
   static function fixOOFFMandate($old_contribution, $new_contribution_id) {
     $old_mandate = civicrm_api('SepaMandate', 'getsingle', array('entity_id'=>$old_contribution['id'], 'entity_table'=>'civicrm_contribution', 'version' => 3));
     if (!empty($old_mandate['is_error'])) {
-      CRM_Core_Session::setStatus($old_mandate['error_message'], ts("Error", array('domain' => 'de.systopia.rebook')), "error");
+      CRM_Core_Session::setStatus($old_mandate['error_message'], E::ts("Error"), "error");
       return;
     }
 
@@ -310,7 +305,7 @@ class CRM_Rebook_Form_Task_Rebook extends CRM_Core_Form {
     for ($i = 1; $i <= 100; $i++) {
       $new_reference = sprintf($new_reference_pattern, $i);
       if (strlen($new_reference) > 35) {
-        CRM_Core_Session::setStatus(ts("Cannot find a new mandate reference, exceeds 35 characters.", array('domain' => 'de.systopia.rebook')), ts("Error", array('domain' => 'de.systopia.rebook')), "error");
+        CRM_Core_Session::setStatus(E::ts("Cannot find a new mandate reference, exceeds 35 characters."), E::ts("Error"), "error");
         return;
       }
 
@@ -320,7 +315,7 @@ class CRM_Rebook_Form_Task_Rebook extends CRM_Core_Form {
         // found -> it exists -> damn -> keep looking...
         if ($i == 100) {
           // that's it, we tried... maybe something else is wrong
-          CRM_Core_Session::setStatus(ts("Cannot find a new mandate reference", array('domain' => 'de.systopia.rebook')), ts("Error", array('domain' => 'de.systopia.rebook')), "error");
+          CRM_Core_Session::setStatus(E::ts("Cannot find a new mandate reference"), E::ts("Error"), "error");
           break;
         } else {
           // keep looking!
@@ -350,21 +345,21 @@ class CRM_Rebook_Form_Task_Rebook extends CRM_Core_Form {
       'bic'                   => $old_mandate['bic']);
     $create_clone = civicrm_api('SepaMandate', 'create', $new_mandate_data);
     if (!empty($create_clone['is_error'])) {
-      CRM_Core_Session::setStatus($create_clone['error_message'], ts("Error", array('domain' => 'de.systopia.rebook')), "error");
+      CRM_Core_Session::setStatus($create_clone['error_message'], E::ts("Error"), "error");
       return;
     }
 
     // set old (original) mandate to new contribution
     $result = civicrm_api('SepaMandate', 'create', array('id' => $old_mandate['id'], 'entity_id' => $new_contribution_id, 'version' => 3));
     if (!empty($result['is_error'])) {
-      CRM_Core_Session::setStatus($result['error_message'], ts("Error", array('domain' => 'de.systopia.rebook')), "error");
+      CRM_Core_Session::setStatus($result['error_message'], E::ts("Error"), "error");
       return;
     }
 
     // modify new mandate's (invalid clone's) reference, in case it got overridden
     $result = civicrm_api('SepaMandate', 'create', array('id' => $create_clone['id'], 'reference' => $new_reference, 'version' => 3));
     if (!empty($result['is_error'])) {
-      CRM_Core_Session::setStatus($result['error_message'], ts("Error", array('domain' => 'de.systopia.rebook')), "error");
+      CRM_Core_Session::setStatus($result['error_message'], E::ts("Error"), "error");
       return;
     }
   }

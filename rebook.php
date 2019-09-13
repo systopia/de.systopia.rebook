@@ -1,7 +1,7 @@
 <?php
 /*-------------------------------------------------------+
 | SYSTOPIA Rebook Extension                              |
-| Copyright (C) 2017 SYSTOPIA                            |
+| Copyright (C) 2017-2019 SYSTOPIA                       |
 | Author: B. Endres (endres -at- systopia.de)            |
 | http://www.systopia.de/                                |
 +--------------------------------------------------------+
@@ -10,6 +10,7 @@
 
 require_once 'rebook.civix.php';
 
+use CRM_Rebook_ExtensionUtil as E;
 
 /**
 * Add an action for creating donation receipts after doing a search
@@ -24,38 +25,41 @@ function rebook_civicrm_searchTasks($objectType, &$tasks) {
   if ($objectType == 'contribution') {
     if (CRM_Core_Permission::check('edit contributions')) {
       $tasks[] = array(
-          'title'  => ts('Rebook to contact', array('domain' => 'de.systopia.rebook')),
+          'title'  => E::ts('Rebook to contact'),
           'class'  => 'CRM_Rebook_Form_Task_RebookTask',
+          'result' => false);
+    }
+    if (CRM_Core_Permission::check('administer CiviCRM')) {
+      $tasks[] = array(
+          'title'  => E::ts('Move to contact'),
+          'class'  => 'CRM_Rebook_Form_Task_MoveTask',
           'result' => false);
     }
   }
 }
 
-
-/**
- *  Add rebook actions is contribution search result
- */
-function rebook_civicrm_searchColumns($objectName, &$headers,  &$values, &$selector) {
-  if ($objectName == 'contribution') {
-    // only offer rebook only if the user has the correct permissions
+function rebook_civicrm_links($op, $objectName, $objectId, &$links, &$mask, &$values) {
+//  Civi::log()->debug("$op, $objectName, $objectId");
+  if ($objectName == 'Contribution' && $op == 'contribution.selector.row') {
     if (CRM_Core_Permission::check('edit contributions')) {
-      $contribution_status_complete = (int) CRM_Core_OptionGroup::getValue('contribution_status', 'Completed', 'name');
-      $title = ts('Rebook', array('domain' => 'de.systopia.rebook'));
-      $url = CRM_Utils_System::url('civicrm/rebook/rebook', "contributionIds=__CONTRIBUTION_ID__");
-      $action = "<a title=\"$title\" class=\"action-item action-item\" href=\"$url\">$title</a>";
-
-      // add 'rebook' action link to each row
-      foreach ($values as $rownr => $row) {
-        $contribution_status_id = $row['contribution_status_id'];
-        // ... but only for completed contributions
-        if ($contribution_status_id==$contribution_status_complete) {
-          // this contribution is o.k. => add the rebook action
-          // FIXME: use hook instead
-          $contribution_id = $row['contribution_id'];
-          $this_action = str_replace('__CONTRIBUTION_ID__', $contribution_id, $action);
-          $values[$rownr]['action'] = str_replace('</span>', $this_action.'</span>', $row['action']);
-        }
-      }
+      // add rebook link
+      $links[] = [
+          'name'  => E::ts("Rebook"),
+          'title' => E::ts("Rebook contribution to another contact"),
+          'url'   => 'civicrm/rebook/rebook',
+          'qs'    => "contributionIds={$objectId}",
+          'class' => "small-popup",
+      ];
+    }
+    if (CRM_Core_Permission::check('administer CiviCRM')) {
+      // add rebook link
+      $links[] = [
+          'name'  => E::ts("Move"),
+          'title' => E::ts("Move contribution to another contact"),
+          'url'   => 'civicrm/rebook/move',
+          'qs'    => "contributionIds={$objectId}",
+          'class' => "small-popup",
+      ];
     }
   }
 }
