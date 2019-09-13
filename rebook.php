@@ -39,7 +39,7 @@ function rebook_civicrm_searchTasks($objectType, &$tasks) {
 }
 
 function rebook_civicrm_links($op, $objectName, $objectId, &$links, &$mask, &$values) {
-  Civi::log()->debug("$op, $objectName, $objectId");
+//  Civi::log()->debug("$op, $objectName, $objectId");
   if ($objectName == 'Contribution' && $op == 'contribution.selector.row') {
     if (CRM_Core_Permission::check('edit contributions')) {
       // add rebook link
