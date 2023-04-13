@@ -4,7 +4,7 @@ use CRM_Rebook_ExtensionUtil as E;
 /**
  * Collection of upgrade steps.
  */
-class CRM_Rebook_Upgrader extends CRM_Rebook_Upgrader_Base {
+class CRM_Rebook_Upgrader extends CRM_Extension_Upgrader_Base {
 
   /**
    * Run menu/rebuild
