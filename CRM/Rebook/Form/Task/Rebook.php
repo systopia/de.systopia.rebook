@@ -115,10 +115,10 @@ class CRM_Rebook_Form_Task_Rebook extends CRM_Core_Form {
   public static function rebook($contribution_ids, $contact_id, $redirect_url = NULL) {
     $contact_id = (int) $contact_id;
     $excludeList = array('id', 'contribution_id', 'trxn_id', 'invoice_id', 'cancel_date', 'cancel_reason', 'address_id', 'contribution_contact_id', 'contribution_status_id');
-    $cancelledStatus = CRM_Core_OptionGroup::getValue('contribution_status', 'Cancelled', 'name');
-    $completedStatus = CRM_Core_OptionGroup::getValue('contribution_status', 'Completed', 'name');
+    $cancelledStatus = CRM_Rebook_Legacycode_OptionGroup::getValue('contribution_status', 'Cancelled', 'name');
+    $completedStatus = CRM_Rebook_Legacycode_OptionGroup::getValue('contribution_status', 'Completed', 'name');
     $contribution_fieldKeys = CRM_Contribute_DAO_Contribution::fieldKeys();
-    $sepa_ooff_payment_id = CRM_Core_OptionGroup::getValue('payment_instrument', 'OOFF', 'name');
+    $sepa_ooff_payment_id = CRM_Rebook_Legacycode_OptionGroup::getValue('payment_instrument', 'OOFF', 'name');
 
     // save recurring contribution status
     $recur_status = self::getRecurringContributionStatus($contribution_ids);
@@ -155,7 +155,7 @@ class CRM_Rebook_Form_Task_Rebook extends CRM_Core_Form {
             'version'                 => 3,
             'contribution_contact_id' => $contact_id,
             'contribution_status_id'  => $completedStatus,
-            'payment_instrument_id'   => CRM_Core_OptionGroup::getValue('payment_instrument', $contribution['instrument_id'], 'id'), // this seems to be an API bug
+            'payment_instrument_id'   => CRM_Rebook_Legacycode_OptionGroup::getValue('payment_instrument', $contribution['instrument_id'], 'id'), // this seems to be an API bug
         );
         foreach ($contribution as $key => $value) {
 
@@ -267,7 +267,7 @@ class CRM_Rebook_Form_Task_Rebook extends CRM_Core_Form {
     }
 
     // only completed contributions can be rebooked
-    $completed = CRM_Core_OptionGroup::getValue('contribution_status', 'Completed', 'name');
+    $completed = CRM_Rebook_Legacycode_OptionGroup::getValue('contribution_status', 'Completed', 'name');
     $arr = explode(",", $contributionIds);
     foreach ($arr as $contributionId) {
       $contribution = new CRM_Contribute_DAO_Contribution();
