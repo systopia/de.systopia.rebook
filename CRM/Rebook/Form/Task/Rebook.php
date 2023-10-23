@@ -203,7 +203,7 @@ class CRM_Rebook_Form_Task_Rebook extends CRM_Core_Form {
         // move all notes from the old contribution
         $notes = civicrm_api('Note', 'get', array('entity_id' => $contributionId, 'entity_table' => 'civicrm_contribution', 'version' => 3));
         if (!empty($notes['is_error'])) {
-          CRM_Core_Error::debug_log_message("de.systopia.rebook: Error while reading notes: ".$notes['error_message']);
+          Civi::log()->debug("de.systopia.rebook: Error while reading notes: ".$notes['error_message']);
         } else {
           foreach ($notes['values'] as $note) {
             $dao = new CRM_Core_DAO_Note();
@@ -223,7 +223,7 @@ class CRM_Rebook_Form_Task_Rebook extends CRM_Core_Form {
     if ($rebooked == $contribution_count) {
       CRM_Core_Session::setStatus(E::ts('%1 contribution(s) successfully rebooked!', array(1 => $contribution_count, 'domain' => 'de.systopia.rebook')), E::ts('Successfully rebooked!'), 'success');
     } else {
-      CRM_Core_Error::debug_log_message("de.systopia.rebook: Only $rebooked of $contribution_count contributions rebooked.");
+      Civi::log()->debug("de.systopia.rebook: Only $rebooked of $contribution_count contributions rebooked.");
       CRM_Core_Session::setStatus(E::ts('Please check your data and try again', array(1 => $contribution_count)), E::ts('Nothing rebooked!'), 'warning');
       CRM_Utils_System::redirect($redirect_url);
     }

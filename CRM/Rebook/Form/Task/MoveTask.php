@@ -62,7 +62,7 @@ class CRM_Rebook_Form_Task_MoveTask extends CRM_Contribute_Form_Task {
     $values = $this->exportValues();
     $contact_id = (int) trim($values['contactId']);
     CRM_Rebook_Form_Task_Move::move($this->_contributionIds, $contact_id, $userContext);
-    CRM_Core_Session::setStatus(E::ts("Moved %1 contribution(s) to contact [%2]", [1 => count($this->contribution_ids), 2 => $contact_id]), E::ts("Success"), 'info');
+    CRM_Core_Session::setStatus(E::ts("Moved %1 contribution(s) to contact [%2]", [1 => count($this->_contributionIds), 2 => $contact_id]), E::ts("Success"), 'info');
     parent::postProcess();
 
     // finally, redirect to original contact's contribution overview
