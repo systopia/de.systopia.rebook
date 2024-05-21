@@ -49,11 +49,9 @@ class CRM_Rebook_Form_Task_MoveTask extends CRM_Contribute_Form_Task {
     parent::buildQuickForm();
   }
 
-
   function addRules() {
-    $this->addFormRule(array('CRM_Rebook_Form_Task_Rebook', 'rebookRules'));
+    $this->addFormRule([CRM_Rebook_Form_Task_Move::class, 'moveRules']);
   }
-
 
   function postProcess() {
     $session = CRM_Core_Session::singleton();
