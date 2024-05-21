@@ -1,0 +1,195 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: de_DE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.0.1\n"
+
+#: CRM/Rebook/Form/Task/Move.php CRM/Rebook/Form/Task/MoveTask.php rebook.php
+msgid "Move"
+msgstr "Verschieben"
+
+#: CRM/Rebook/Form/Task/Move.php CRM/Rebook/Form/Task/MoveTask.php
+#: CRM/Rebook/Form/Task/Rebook.php CRM/Rebook/Form/Task/RebookTask.php
+msgid "You do not have the permissions required to access this page."
+msgstr "Sie haben nicht die Berechtigungen zum Zugriff auf diese Seite."
+
+#: CRM/Rebook/Form/Task/Move.php
+msgid "You need to specifiy a contribution to move."
+msgstr "Sie müssen eine Zuwendung zum Verschieben auswählen."
+
+#: CRM/Rebook/Form/Task/Move.php CRM/Rebook/Form/Task/MoveTask.php
+#: CRM/Rebook/Form/Task/Rebook.php CRM/Rebook/Form/Task/RebookTask.php
+msgid "CiviCRM ID"
+msgstr "CiviCRM ID"
+
+#: CRM/Rebook/Form/Task/Move.php CRM/Rebook/Form/Task/MoveTask.php
+msgid "Moved %1 contribution(s) to contact [%2]"
+msgstr "%1 Zuwendung(en) verschoben zu Kontakt [%2]"
+
+#: CRM/Rebook/Form/Task/Move.php CRM/Rebook/Form/Task/MoveTask.php
+#: CRM/Rebook/Form/Task/Rebook.php
+msgid "Success"
+msgstr "Erfolgreich"
+
+#: CRM/Rebook/Form/Task/Move.php
+msgid "Moved from contact [%1] on %2 by %3"
+msgstr "Verschoben von Kontakt [%1] am %2 durch %3"
+
+#: CRM/Rebook/Form/Task/Move.php
+msgid "Contribution moved!"
+msgstr "Zuwendung verschoben!"
+
+#: CRM/Rebook/Form/Task/Move.php CRM/Rebook/Form/Task/Rebook.php
+msgid "Please enter a CiviCRM ID!"
+msgstr "Bitte geben Sie eine CiviCRM ID ein!"
+
+#: CRM/Rebook/Form/Task/Move.php CRM/Rebook/Form/Task/Rebook.php
+msgid "A contact with CiviCRM ID %1 doesn't exist!"
+msgstr "Ein Kontakt mit der CiviCRM ID %1 existiert nicht!"
+
+#: CRM/Rebook/Form/Task/Move.php CRM/Rebook/Form/Task/Rebook.php
+msgid "The target contact can not be a household!"
+msgstr "Der Zielkontakt kann kein Haushalt sein!"
+
+#: CRM/Rebook/Form/Task/Move.php CRM/Rebook/Form/Task/Rebook.php
+msgid "The target contact can not be in trash!"
+msgstr "Der Zielkontakt kann nicht gelöscht sein!"
+
+#: CRM/Rebook/Form/Task/Move.php
+msgid "You mustn't move recurring contributions."
+msgstr "Sie dürfen keine wiederkehrenden Zuwendungen verschieben."
+
+#: CRM/Rebook/Form/Task/Rebook.php CRM/Rebook/Form/Task/RebookTask.php
+#: rebook.php
+msgid "Rebook"
+msgstr "Umbuchen"
+
+#: CRM/Rebook/Form/Task/Rebook.php
+msgid "You need to specifiy a contribution to rebook."
+msgstr "Sie müssen eine Zuwendung zum Umbuchen auswählen."
+
+#: CRM/Rebook/Form/Task/Rebook.php
+msgid "Re-booked %1 contribution(s) to contact [%2]"
+msgstr "%1 Zuwendung(en) zu Kontakt [%2] umgebucht"
+
+#: CRM/Rebook/Form/Task/Rebook.php
+msgid "At least one of the given contributions doesn't exist!"
+msgstr "Mindestens eine der angegebenen Zuwendungen existiert nicht!"
+
+#: CRM/Rebook/Form/Task/Rebook.php
+msgid "Error"
+msgstr "Fehler"
+
+#: CRM/Rebook/Form/Task/Rebook.php
+msgid ""
+"Moving/rebooking multiple contributions from different contacts is not "
+"allowed!"
+msgstr ""
+"Verschieben/Umbuchen mehrerer Zuwendungen von verschiedenen Kontakten ist "
+"nicht erlaubt!"
+
+#: CRM/Rebook/Form/Task/Rebook.php
+msgid "Rebooked to CiviCRM ID %1"
+msgstr "Zu CiviCRM ID %1 umgebucht"
+
+#: CRM/Rebook/Form/Task/Rebook.php
+msgid "Rebooked from CiviCRM ID %1"
+msgstr "Von CiviCRM ID %1 umgebucht"
+
+#: CRM/Rebook/Form/Task/Rebook.php
+msgid "%1 contribution(s) successfully rebooked!"
+msgstr "%1 Zuwendung(en) erfolgreich umgebucht!"
+
+#: CRM/Rebook/Form/Task/Rebook.php
+msgid "Successfully rebooked!"
+msgstr "Erfolgreich umgebucht!"
+
+#: CRM/Rebook/Form/Task/Rebook.php
+msgid "Please check your data and try again"
+msgstr "Bitte prüfen Sie Ihre Daten und versuchen Sie es erneut"
+
+#: CRM/Rebook/Form/Task/Rebook.php
+msgid "Nothing rebooked!"
+msgstr "Nichts umgebucht!"
+
+#: CRM/Rebook/Form/Task/Rebook.php
+msgid "The contribution with ID %1 is not completed!"
+msgstr "Die Zuwendung mit ID %1 ist nicht abgeschlossen!"
+
+#: CRM/Rebook/Form/Task/Rebook.php
+msgid "Cannot find a new mandate reference, exceeds 35 characters."
+msgstr ""
+"Neue Mandatsreferenz kann nicht gefunden werden, überschreitet 35 Zeichen."
+
+#: CRM/Rebook/Form/Task/Rebook.php
+msgid "Cannot find a new mandate reference"
+msgstr "Neue Mandatsreferenz kann nicht gefunden werden"
+
+#: rebook.php
+msgid "Rebook to contact"
+msgstr "Zu Kontakt umbuchen"
+
+#: rebook.php
+msgid "Move to contact"
+msgstr "Zu Kontakt verschieben"
+
+#: rebook.php
+msgid "Rebook contribution to another contact"
+msgstr "Buche Zuwendung zu anderem Kontakt um"
+
+#: rebook.php
+msgid "Move contribution to another contact"
+msgstr "Verschiebe Zuwendung zu anderem Kontakt"
+
+#: rebook.php
+msgid "Rebook Settings"
+msgstr "Rebook Einstellungen"
+
+#: settings/rebook.setting.php
+msgid "Allow Households"
+msgstr "Haushalte erlauben"
+
+#: settings/rebook.setting.php
+msgid "Allow households to be target contacts."
+msgstr "Haushalte als Zielkontakt erlauben."
+
+#: templates/CRM/Rebook/Form/Task/Move.tpl
+msgid ""
+"Are you sure you want to move the selected contributions? This can be "
+"dangerous and may cause issues with accounting."
+msgstr ""
+"Sind Sie sicher, dass Sie die ausgewählten Zuwendungen verschieben wollen? "
+"Dies kann gefährlich sein und Probleme mit der Buchhaltung verursachen."
+
+#: templates/CRM/Rebook/Form/Task/Move.tpl
+#: templates/CRM/Rebook/Form/Task/Rebook.tpl
+msgid "Number of selected contributions:"
+msgstr "Anzahl der ausgewählten Zuwendungen:"
+
+#: templates/CRM/Rebook/Form/Task/Move.tpl
+msgid ""
+"Are you sure you want to move the selected contributions? This can cause "
+"issues with accounting."
+msgstr ""
+"Sind Sie sicher, dass Sie die ausgewählten Zuwendungen verschieben wollen? "
+"Dies kann Probleme mit der Buchhaltung verursachen."
+
+#: templates/CRM/Rebook/Form/Task/Move.tpl
+#: templates/CRM/Rebook/Form/Task/Rebook.tpl
+msgid "Please enter the target contact's CiviCRM ID"
+msgstr "Bitte geben Sie die CiviCRM ID des Zielkontakts ein"
+
+#: templates/CRM/Rebook/Form/Task/Rebook.tpl
+msgid ""
+"Are you sure you want to rebook the selected contributions? This cannot be "
+"undone."
+msgstr ""
+"Sind Sie sicher, dass Sie die ausgewählten Zuwendungen umbuchen wollen? Dies "
+"kann nicht rückgängig gemacht werden."

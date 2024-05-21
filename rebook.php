@@ -64,6 +64,16 @@ function rebook_civicrm_links($op, $objectName, $objectId, &$links, &$mask, &$va
   }
 }
 
+function rebook_civicrm_navigationMenu(array &$menu) {
+  _rebook_civix_insert_navigation_menu($menu, 'Administer/System Settings', [
+    'label' => E::ts('Rebook Settings'),
+    'name' => 'rebook_settings',
+    'url' => 'civicrm/admin/setting/rebook',
+    'permission' => 'administer CiviCRM',
+
+  ]);
+}
+
 /**
  * Implements hook_civicrm_config().
  *

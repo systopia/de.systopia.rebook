@@ -1,0 +1,160 @@
+#: CRM/Rebook/Form/Task/Move.php CRM/Rebook/Form/Task/MoveTask.php rebook.php
+msgid "Move"
+msgstr ""
+
+#: CRM/Rebook/Form/Task/Move.php CRM/Rebook/Form/Task/MoveTask.php CRM/Rebook/Form/Task/Rebook.php CRM/Rebook/Form/Task/RebookTask.php
+msgid "You do not have the permissions required to access this page."
+msgstr ""
+
+#: CRM/Rebook/Form/Task/Move.php
+msgid "You need to specifiy a contribution to move."
+msgstr ""
+
+#: CRM/Rebook/Form/Task/Move.php CRM/Rebook/Form/Task/MoveTask.php CRM/Rebook/Form/Task/Rebook.php CRM/Rebook/Form/Task/RebookTask.php
+msgid "CiviCRM ID"
+msgstr ""
+
+#: CRM/Rebook/Form/Task/Move.php CRM/Rebook/Form/Task/MoveTask.php
+msgid "Moved %1 contribution(s) to contact [%2]"
+msgstr ""
+
+#: CRM/Rebook/Form/Task/Move.php CRM/Rebook/Form/Task/MoveTask.php CRM/Rebook/Form/Task/Rebook.php
+msgid "Success"
+msgstr ""
+
+#: CRM/Rebook/Form/Task/Move.php
+msgid "Moved from contact [%1] on %2 by %3"
+msgstr ""
+
+#: CRM/Rebook/Form/Task/Move.php
+msgid "Contribution moved!"
+msgstr ""
+
+#: CRM/Rebook/Form/Task/Move.php CRM/Rebook/Form/Task/Rebook.php
+msgid "Please enter a CiviCRM ID!"
+msgstr ""
+
+#: CRM/Rebook/Form/Task/Move.php CRM/Rebook/Form/Task/Rebook.php
+msgid "A contact with CiviCRM ID %1 doesn't exist!"
+msgstr ""
+
+#: CRM/Rebook/Form/Task/Move.php CRM/Rebook/Form/Task/Rebook.php
+msgid "The target contact can not be a household!"
+msgstr ""
+
+#: CRM/Rebook/Form/Task/Move.php CRM/Rebook/Form/Task/Rebook.php
+msgid "The target contact can not be in trash!"
+msgstr ""
+
+#: CRM/Rebook/Form/Task/Move.php
+msgid "You mustn't move recurring contributions."
+msgstr ""
+
+#: CRM/Rebook/Form/Task/Rebook.php CRM/Rebook/Form/Task/RebookTask.php rebook.php
+msgid "Rebook"
+msgstr ""
+
+#: CRM/Rebook/Form/Task/Rebook.php
+msgid "You need to specifiy a contribution to rebook."
+msgstr ""
+
+#: CRM/Rebook/Form/Task/Rebook.php
+msgid "Re-booked %1 contribution(s) to contact [%2]"
+msgstr ""
+
+#: CRM/Rebook/Form/Task/Rebook.php
+msgid "At least one of the given contributions doesn't exist!"
+msgstr ""
+
+#: CRM/Rebook/Form/Task/Rebook.php
+msgid "Error"
+msgstr ""
+
+#: CRM/Rebook/Form/Task/Rebook.php
+msgid "Moving/rebooking multiple contributions from different contacts is not allowed!"
+msgstr ""
+
+#: CRM/Rebook/Form/Task/Rebook.php
+msgid "Rebooked to CiviCRM ID %1"
+msgstr ""
+
+#: CRM/Rebook/Form/Task/Rebook.php
+msgid "Rebooked from CiviCRM ID %1"
+msgstr ""
+
+#: CRM/Rebook/Form/Task/Rebook.php
+msgid "%1 contribution(s) successfully rebooked!"
+msgstr ""
+
+#: CRM/Rebook/Form/Task/Rebook.php
+msgid "Successfully rebooked!"
+msgstr ""
+
+#: CRM/Rebook/Form/Task/Rebook.php
+msgid "Please check your data and try again"
+msgstr ""
+
+#: CRM/Rebook/Form/Task/Rebook.php
+msgid "Nothing rebooked!"
+msgstr ""
+
+#: CRM/Rebook/Form/Task/Rebook.php
+msgid "The contribution with ID %1 is not completed!"
+msgstr ""
+
+#: CRM/Rebook/Form/Task/Rebook.php
+msgid "Cannot find a new mandate reference, exceeds 35 characters."
+msgstr ""
+
+#: CRM/Rebook/Form/Task/Rebook.php
+msgid "Cannot find a new mandate reference"
+msgstr ""
+
+#: rebook.php
+msgid "Rebook to contact"
+msgstr ""
+
+#: rebook.php
+msgid "Move to contact"
+msgstr ""
+
+#: rebook.php
+msgid "Rebook contribution to another contact"
+msgstr ""
+
+#: rebook.php
+msgid "Move contribution to another contact"
+msgstr ""
+
+#: rebook.php
+msgid "Rebook Settings"
+msgstr ""
+
+#: settings/rebook.setting.php
+msgid "Allow Households"
+msgstr ""
+
+#: settings/rebook.setting.php
+msgid "Allow households to be target contacts."
+msgstr ""
+
+#: templates/CRM/Rebook/Form/Task/Move.tpl
+msgid "Are you sure you want to move the selected contributions? This can be dangerous and may cause issues with accounting."
+msgstr ""
+
+#: templates/CRM/Rebook/Form/Task/Move.tpl templates/CRM/Rebook/Form/Task/Rebook.tpl
+msgid "Number of selected contributions:"
+msgstr ""
+
+#: templates/CRM/Rebook/Form/Task/Move.tpl
+msgid "Are you sure you want to move the selected contributions? This can cause issues with accounting."
+msgstr ""
+
+#: templates/CRM/Rebook/Form/Task/Move.tpl templates/CRM/Rebook/Form/Task/Rebook.tpl
+msgid "Please enter the target contact's CiviCRM ID"
+msgstr ""
+
+#: templates/CRM/Rebook/Form/Task/Rebook.tpl
+msgid "Are you sure you want to rebook the selected contributions? This cannot be undone."
+msgstr ""
+

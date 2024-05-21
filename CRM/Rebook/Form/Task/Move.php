@@ -151,14 +151,14 @@ class CRM_Rebook_Form_Task_Move extends CRM_Core_Form {
       return empty($errors) ? TRUE : $errors;
     }
 
-    // cannot move to households
+    // don't move to households if not allowed
     $contactType = $contact->getContactType($contactId);
-    if (!empty($contactType) && $contactType == 'Household') {
+    if (!empty($contactType) && $contactType === 'Household' && TRUE !== \Civi::settings()->get('rebook_allow_households')) {
       $errors['contactId'] = E::ts('The target contact can not be a household!');
       return empty($errors) ? TRUE : $errors;
     }
 
-    // cannot be deleted
+    // target contact cannot be deleted
     $contactIsDeleted = $contact->is_deleted;
     if ($contactIsDeleted == 1) {
       $errors['contactId'] = E::ts('The target contact can not be in trash!');
