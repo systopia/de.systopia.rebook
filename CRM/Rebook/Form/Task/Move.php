@@ -85,15 +85,15 @@ class CRM_Rebook_Form_Task_Move extends CRM_Core_Form {
 
     // move contributions
     CRM_Core_DAO::executeQuery("
-            UPDATE civicrm_contribution 
-            SET contact_id = {$contact_id} 
+            UPDATE civicrm_contribution
+            SET contact_id = {$contact_id}
             WHERE id IN ({$contribution_id_list})");
 
     // move financial items
     CRM_Core_DAO::executeQuery("
-            UPDATE civicrm_financial_item 
+            UPDATE civicrm_financial_item
             LEFT JOIN civicrm_line_item ON civicrm_line_item.id = civicrm_financial_item.entity_id AND civicrm_financial_item.entity_table = 'civicrm_line_item'
-            SET contact_id = {$contact_id} 
+            SET contact_id = {$contact_id}
             WHERE civicrm_line_item.contribution_id IN ({$contribution_id_list})");
 
     // move contribution activities
@@ -102,12 +102,12 @@ class CRM_Rebook_Form_Task_Move extends CRM_Core_Form {
         'name'            => 'Contribution',
         'return'          => 'value']);
     CRM_Core_DAO::executeQuery("
-            UPDATE civicrm_activity_contact 
-            SET contact_id = {$contact_id} 
+            UPDATE civicrm_activity_contact
+            SET contact_id = {$contact_id}
             WHERE record_type_id = 3
-              AND activity_id IN (SELECT civicrm_activity.id 
-                                  FROM civicrm_activity 
-                                  WHERE civicrm_activity.activity_type_id = {$contribution_activity_type} 
+              AND activity_id IN (SELECT civicrm_activity.id
+                                  FROM civicrm_activity
+                                  WHERE civicrm_activity.activity_type_id = {$contribution_activity_type}
                                   AND civicrm_activity.source_record_id IN ({$contribution_id_list}))");
 
     // add a note to each contribution
