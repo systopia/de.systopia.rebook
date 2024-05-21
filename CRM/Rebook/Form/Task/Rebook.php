@@ -83,7 +83,7 @@ class CRM_Rebook_Form_Task_Rebook extends CRM_Core_Form {
           'sequential' => 1,
           'id' => $contributionId,
       );
-      $contribution = civicrm_api('Contribution', 'getsingle', $params);
+      $contribution = civicrm_api3('Contribution', 'getsingle', $params);
 
       if (empty($contribution['is_error'])) { // contribution exists
         array_push($contact_ids, $contribution['contact_id']);
@@ -133,7 +133,7 @@ class CRM_Rebook_Form_Task_Rebook extends CRM_Core_Form {
           'sequential' => 1,
           'id' => $contributionId,
       );
-      $contribution = civicrm_api('Contribution', 'getsingle', $params);
+      $contribution = civicrm_api3('Contribution', 'getsingle', $params);
 
       if (empty($contribution['is_error'])) { // contribution exists
         // cancel contribution
@@ -145,7 +145,7 @@ class CRM_Rebook_Form_Task_Rebook extends CRM_Core_Form {
             'currency'                => $contribution['currency'],    // see ticket #1455
             'id'                      => $contribution['id'],
         );
-        $cancelledContribution = civicrm_api('Contribution', 'create', $params);
+        $cancelledContribution = civicrm_api3('Contribution', 'create', $params);
         if (!empty($cancelledContribution['is_error']) && !empty($cancelledContribution['error_message'])) {
           CRM_Core_Session::setStatus($cancelledContribution['error_message'], E::ts("Error"), "error");
         }
@@ -166,7 +166,7 @@ class CRM_Rebook_Form_Task_Rebook extends CRM_Core_Form {
           if (strstr($key, 'custom')) { // get custom fields
             // load custom field spec for exception handling
             $custom_field_id = substr($key, 7);
-            $custom_field = civicrm_api('CustomField', 'getsingle', array('id'=>$custom_field_id,'version'=>3));
+            $custom_field = civicrm_api3('CustomField', 'getsingle', array('id'=>$custom_field_id,'version'=>3));
 
             // Exception 1: dates are not properly formatted
             if ($custom_field['data_type'] == 'Date') {
@@ -179,7 +179,7 @@ class CRM_Rebook_Form_Task_Rebook extends CRM_Core_Form {
         }
 
         // create new contribution
-        $newContribution = civicrm_api('Contribution', 'create', $attributes);
+        $newContribution = civicrm_api3('Contribution', 'create', $attributes);
         if (!empty($newContribution['is_error']) && !empty($newContribution['error_message'])) {
           CRM_Core_Session::setStatus($newContribution['error_message'], E::ts("Error"), "error");
         }
@@ -197,11 +197,11 @@ class CRM_Rebook_Form_Task_Rebook extends CRM_Core_Form {
             'entity_table' => 'civicrm_contribution',
             'entity_id' => $newContribution['id']
         );
-        $result = civicrm_api('Note', 'create', $params);
+        $result = civicrm_api3('Note', 'create', $params);
 
 
         // move all notes from the old contribution
-        $notes = civicrm_api('Note', 'get', array('entity_id' => $contributionId, 'entity_table' => 'civicrm_contribution', 'version' => 3));
+        $notes = civicrm_api3('Note', 'get', array('entity_id' => $contributionId, 'entity_table' => 'civicrm_contribution', 'version' => 3));
         if (!empty($notes['is_error'])) {
           Civi::log()->debug("de.systopia.rebook: Error while reading notes: ".$notes['error_message']);
         } else {
@@ -293,7 +293,7 @@ class CRM_Rebook_Form_Task_Rebook extends CRM_Core_Form {
    * @see org.project60.sepa extension
    */
   static function fixOOFFMandate($old_contribution, $new_contribution_id) {
-    $old_mandate = civicrm_api('SepaMandate', 'getsingle', array('entity_id'=>$old_contribution['id'], 'entity_table'=>'civicrm_contribution', 'version' => 3));
+    $old_mandate = civicrm_api3('SepaMandate', 'getsingle', array('entity_id'=>$old_contribution['id'], 'entity_table'=>'civicrm_contribution', 'version' => 3));
     if (!empty($old_mandate['is_error'])) {
       CRM_Core_Session::setStatus($old_mandate['error_message'], E::ts("Error"), "error");
       return;
@@ -310,7 +310,7 @@ class CRM_Rebook_Form_Task_Rebook extends CRM_Core_Form {
       }
 
       // see if this reference already exists
-      $exists = civicrm_api('SepaMandate', 'getsingle', array('reference' => $new_reference, 'version' => 3));
+      $exists = civicrm_api3('SepaMandate', 'getsingle', array('reference' => $new_reference, 'version' => 3));
       if (empty($exists['is_error'])) {
         // found -> it exists -> damn -> keep looking...
         if ($i == 100) {
@@ -343,21 +343,21 @@ class CRM_Rebook_Form_Task_Rebook extends CRM_Core_Form {
       'contact_id'            => $old_mandate['contact_id'],
       'iban'                  => $old_mandate['iban'],
       'bic'                   => $old_mandate['bic']);
-    $create_clone = civicrm_api('SepaMandate', 'create', $new_mandate_data);
+    $create_clone = civicrm_api3('SepaMandate', 'create', $new_mandate_data);
     if (!empty($create_clone['is_error'])) {
       CRM_Core_Session::setStatus($create_clone['error_message'], E::ts("Error"), "error");
       return;
     }
 
     // set old (original) mandate to new contribution
-    $result = civicrm_api('SepaMandate', 'create', array('id' => $old_mandate['id'], 'entity_id' => $new_contribution_id, 'version' => 3));
+    $result = civicrm_api3('SepaMandate', 'create', array('id' => $old_mandate['id'], 'entity_id' => $new_contribution_id, 'version' => 3));
     if (!empty($result['is_error'])) {
       CRM_Core_Session::setStatus($result['error_message'], E::ts("Error"), "error");
       return;
     }
 
     // modify new mandate's (invalid clone's) reference, in case it got overridden
-    $result = civicrm_api('SepaMandate', 'create', array('id' => $create_clone['id'], 'reference' => $new_reference, 'version' => 3));
+    $result = civicrm_api3('SepaMandate', 'create', array('id' => $create_clone['id'], 'reference' => $new_reference, 'version' => 3));
     if (!empty($result['is_error'])) {
       CRM_Core_Session::setStatus($result['error_message'], E::ts("Error"), "error");
       return;
@@ -379,8 +379,8 @@ class CRM_Rebook_Form_Task_Rebook extends CRM_Core_Form {
     $status = [];
     $contribution_id_list = implode(',', $contribution_ids);
     $data = CRM_Core_DAO::executeQuery("
-      SELECT rcur.id                     AS rcur_id, 
-             rcur.contribution_status_id AS status_id 
+      SELECT rcur.id                     AS rcur_id,
+             rcur.contribution_status_id AS status_id
       FROM civicrm_contribution_recur rcur
       LEFT JOIN civicrm_contribution contribution ON rcur.id = contribution.contribution_recur_id
       WHERE contribution.id IN ({$contribution_id_list})");
@@ -399,8 +399,8 @@ class CRM_Rebook_Form_Task_Rebook extends CRM_Core_Form {
     if (!empty($desired_status)) {
       $recurring_contribution_id_list = implode(',', array_keys($desired_status));
       $current_status = CRM_Core_DAO::executeQuery("
-      SELECT rcur.id                     AS rcur_id, 
-             rcur.contribution_status_id AS status_id 
+      SELECT rcur.id                     AS rcur_id,
+             rcur.contribution_status_id AS status_id
       FROM civicrm_contribution_recur rcur
       WHERE rcur.id IN ({$recurring_contribution_id_list})");
       while ($current_status->fetch()) {
@@ -411,7 +411,7 @@ class CRM_Rebook_Form_Task_Rebook extends CRM_Core_Form {
               1 => [$desired_status[$recurring_contribution_id], 'Integer'],
               2 => [$recurring_contribution_id, 'Integer']]);
           // API doesn't work, silently fails:
-          //civicrm_api('ContributionRecur', 'create', [
+          //civicrm_api3('ContributionRecur', 'create', [
           //    'id'                     => $recurring_contribution_id,
           //    'contribution_status_id' => $desired_status[$recurring_contribution_id]]);
         }
