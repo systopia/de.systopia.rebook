@@ -17,10 +17,10 @@
   <div class="messages status no-popup">
       <div class="icon inform-icon"></div>
       {if $totalSelectedContributions gt 1}
-      <p>{ts domain="de.systopia.rebook"}Are you sure you want to move the selected contributions? This can be dangerous and may cause issues with accounting..{/ts}</p>
+      <p>{ts domain="de.systopia.rebook"}Are you sure you want to move the selected contributions? This can be dangerous and may cause issues with accounting.{/ts}</p>
       <p>{ts domain="de.systopia.rebook"}Number of selected contributions:{/ts} {$totalSelectedContributions}</p><b/>
       {else}
-      <p>{ts domain="de.systopia.rebook"}Are you sure you want to move the selected contributions? This can cause issues with accounting..{/ts}</p>
+      <p>{ts domain="de.systopia.rebook"}Are you sure you want to move the selected contributions? This can cause issues with accounting.{/ts}</p>
       {/if}
   </div>
 
